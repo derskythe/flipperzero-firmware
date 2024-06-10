@@ -25,7 +25,7 @@ struct HidIadDescriptor {
 struct HidConfigDescriptor {
     struct usb_config_descriptor config;
     struct HidIadDescriptor iad_0;
-} __attribute__((packed));
+} FURI_PACKED;
 
 /* HID report: FIDO U2F */
 static const uint8_t hid_u2f_report_desc[] = {
@@ -153,7 +153,7 @@ static bool hid_u2f_connected = false;
 static HidU2fCallback callback;
 static void* cb_ctx;
 
-bool furi_hal_hid_u2f_is_connected() {
+bool furi_hal_hid_u2f_is_connected(void) {
     return hid_u2f_connected;
 }
 

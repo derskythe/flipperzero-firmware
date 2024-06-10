@@ -130,7 +130,7 @@ typedef enum {
     MfUltralightMirrorUidCounter,
 } MfUltralightMirrorConf;
 
-typedef struct __attribute__((packed)) {
+typedef struct FURI_PACKED {
     union {
         uint8_t value;
         struct {
@@ -177,7 +177,7 @@ typedef struct {
 
 extern const NfcDeviceBase nfc_device_mf_ultralight;
 
-MfUltralightData* mf_ultralight_alloc();
+MfUltralightData* mf_ultralight_alloc(void);
 
 void mf_ultralight_free(MfUltralightData* data);
 
@@ -209,6 +209,8 @@ uint16_t mf_ultralight_get_pages_total(MfUltralightType type);
 uint32_t mf_ultralight_get_feature_support_set(MfUltralightType type);
 
 uint16_t mf_ultralight_get_config_page_num(MfUltralightType type);
+
+uint8_t mf_ultralight_get_write_end_page(MfUltralightType type);
 
 uint8_t mf_ultralight_get_pwd_page_num(MfUltralightType type);
 

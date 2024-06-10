@@ -1,7 +1,8 @@
-#include "storage/storage.h"
-#include <elf.h>
 #include "elf_file.h"
 #include "elf_file_i.h"
+
+#include <storage/storage.h>
+#include <elf.h>
 #include "elf_api_interface.h"
 #include "../api_hashtable/api_hashtable.h"
 
@@ -34,7 +35,7 @@ const uint8_t trampoline_code_little_endian[TRAMPOLINE_CODE_SIZE] =
 typedef struct {
     uint8_t code[TRAMPOLINE_CODE_SIZE];
     uint32_t addr;
-} __attribute__((packed)) JMPTrampoline;
+} FURI_PACKED JMPTrampoline;
 
 /**************************************************************************************************/
 /********************************************* Caches *********************************************/
@@ -101,7 +102,7 @@ static bool elf_read_string_from_offset(ELFFile* elf, off_t offset, FuriString* 
         buffer[ELF_NAME_BUFFER_LEN] = 0;
 
         while(true) {
-            uint16_t read = storage_file_read(elf->fd, buffer, ELF_NAME_BUFFER_LEN);
+            size_t read = storage_file_read(elf->fd, buffer, ELF_NAME_BUFFER_LEN);
             furi_string_cat(name, buffer);
             if(strlen(buffer) < ELF_NAME_BUFFER_LEN) {
                 result = true;
@@ -201,6 +202,7 @@ __attribute__((unused)) static const char* elf_reloc_type_to_str(int symt) {
         STRCASE(R_ARM_NONE)
         STRCASE(R_ARM_TARGET1)
         STRCASE(R_ARM_ABS32)
+        STRCASE(R_ARM_REL32)
         STRCASE(R_ARM_THM_PC22)
         STRCASE(R_ARM_THM_JUMP24)
     default:
@@ -327,6 +329,10 @@ static bool elf_relocate_symbol(ELFFile* elf, Elf32_Addr relAddr, int type, Elf3
     case R_ARM_ABS32:
         *((uint32_t*)relAddr) += symAddr;
         FURI_LOG_D(TAG, "  R_ARM_ABS32 relocated is 0x%08X", (unsigned int)*((uint32_t*)relAddr));
+        break;
+    case R_ARM_REL32:
+        *((uint32_t*)relAddr) += symAddr - relAddr;
+        FURI_LOG_D(TAG, "  R_ARM_REL32 relocated is 0x%08X", (unsigned int)*((uint32_t*)relAddr));
         break;
     case R_ARM_THM_PC22:
     case R_ARM_CALL:

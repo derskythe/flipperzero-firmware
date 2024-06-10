@@ -37,7 +37,7 @@ typedef struct {
 typedef bool (
     *InfraredBatchCallback)(const InfraredBatch* batch, const InfraredBatchTarget* target);
 
-InfraredRemote* infrared_remote_alloc() {
+InfraredRemote* infrared_remote_alloc(void) {
     InfraredRemote* remote = malloc(sizeof(InfraredRemote));
     StringArray_init(remote->signal_names);
     remote->name = furi_string_alloc();
@@ -95,10 +95,9 @@ bool infrared_remote_load_signal(
         const char* path = furi_string_get_cstr(remote->path);
         if(!flipper_format_buffered_file_open_existing(ff, path)) break;
 
-        const char* name = infrared_remote_get_signal_name(remote, index);
-
-        if(!infrared_signal_search_and_read(signal, ff, name)) {
-            FURI_LOG_E(TAG, "Failed to load signal '%s' from file '%s'", name, path);
+        if(!infrared_signal_search_by_index_and_read(signal, ff, index)) {
+            const char* signal_name = infrared_remote_get_signal_name(remote, index);
+            FURI_LOG_E(TAG, "Failed to load signal '%s' from file '%s'", signal_name, path);
             break;
         }
 

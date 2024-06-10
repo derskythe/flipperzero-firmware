@@ -92,7 +92,7 @@ static bool dict_attack_input_callback(InputEvent* event, void* context) {
     return consumed;
 }
 
-DictAttack* dict_attack_alloc() {
+DictAttack* dict_attack_alloc(void) {
     DictAttack* instance = malloc(sizeof(DictAttack));
     instance->view = view_alloc();
     view_allocate_model(instance->view, ViewModelTypeLocking, sizeof(DictAttackViewModel));
@@ -125,7 +125,6 @@ void dict_attack_reset(DictAttack* instance) {
         instance->view,
         DictAttackViewModel * model,
         {
-            model->card_detected = false;
             model->sectors_total = 0;
             model->sectors_read = 0;
             model->current_sector = 0;

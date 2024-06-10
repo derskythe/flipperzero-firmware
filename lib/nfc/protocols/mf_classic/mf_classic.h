@@ -19,6 +19,8 @@ extern "C" {
 #define MF_CLASSIC_CMD_HALT_LSB (0x00)
 #define MF_CLASSIC_CMD_ACK (0x0A)
 #define MF_CLASSIC_CMD_NACK (0x00)
+#define MF_CLASSIC_CMD_NACK_TRANSFER_INVALID (0x04)
+#define MF_CLASSIC_CMD_NACK_TRANSFER_CRC_ERROR (0x01)
 
 #define MF_CLASSIC_TOTAL_SECTORS_MAX (40)
 #define MF_CLASSIC_TOTAL_BLOCKS_MAX (256)
@@ -37,6 +39,7 @@ typedef enum {
     MfClassicErrorNotPresent,
     MfClassicErrorProtocol,
     MfClassicErrorAuth,
+    MfClassicErrorPartialRead,
     MfClassicErrorTimeout,
 } MfClassicError;
 
@@ -140,7 +143,7 @@ typedef struct {
 
 extern const NfcDeviceBase nfc_device_mf_classic;
 
-MfClassicData* mf_classic_alloc();
+MfClassicData* mf_classic_alloc(void);
 
 void mf_classic_free(MfClassicData* data);
 
